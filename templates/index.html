@@ -19,7 +19,7 @@
 
                     data.events.forEach(e => {
                         const li = document.createElement("li");
-                        li.innerText = `${e.author} pushed to ${e.to_branch} on ${e.timestamp}`;
+                        li.innerText = `${e.author} pushed to ${e.to_branch} on ${e.timestamp} (rendered at ${new Date().toLocaleTimeString()})`;
                         list.appendChild(li);
                     });
                 });
