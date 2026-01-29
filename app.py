@@ -21,25 +21,51 @@ def home():
 # GitHub Webhook Endpoint
 @app.route("/webhook", methods=["POST"])
 def webhook():
-    """Receives GitHub webhook events (Push event).
-    Extracts required fields and stores them in MongoDB."""
+    """
+    Handles GitHub webhook events:
+    - PUSH
+    - MERGE (via Pull Request merged)
+    """
     data = request.json
+    event_type = request.headers.get("X-GitHub-Event")
 
-    # Extract required fields from webhook payload
-    document = {
-        "request_id": data["after"],                  # Commit SHA
-        "author": data["pusher"]["name"],             # GitHub username
-        "action": "PUSH",                              # Event type
-        "from_branch": None,                           # Not applicable for push
-        "to_branch": data["ref"].split("/")[-1],       # Branch name
-        "timestamp": data["head_commit"]["timestamp"]  # Event time
-    }
 
-    # Insert event into MongoDB
-    collection.insert_one(document)
+    # PUSH EVENT
+    if event_type == "push":
+        document = {
+            "request_id": data["after"],
+            "author": data["pusher"]["name"],
+            "action": "PUSH",
+            "from_branch": None,
+            "to_branch": data["ref"].split("/")[-1],
+            "timestamp": data["head_commit"]["timestamp"]
+        }
 
-    # Log output in required format
-    print(f'{document["author"]} pushed to {document["to_branch"]} on {document["timestamp"]}')
+        collection.insert_one(document)
+
+        print(f'{document["author"]} pushed to {document["to_branch"]} on {document["timestamp"]}')
+
+
+    # MERGE EVENT (Pull Request merged)
+    elif event_type == "pull_request" and data.get("pull_request", {}).get("merged"):
+        pr = data["pull_request"]
+
+        document = {
+            "request_id": str(pr["id"]),
+            "author": pr["user"]["login"],
+            "action": "MERGE",
+            "from_branch": pr["head"]["ref"],
+            "to_branch": pr["base"]["ref"],
+            "timestamp": pr["merged_at"]
+        }
+
+        collection.insert_one(document)
+
+        print(
+            f'{document["author"]} merged branch '
+            f'{document["from_branch"]} to {document["to_branch"]} '
+            f'on {document["timestamp"]}'
+        )
 
     return "", 200
 

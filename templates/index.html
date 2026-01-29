@@ -31,7 +31,11 @@
 
                     data.events.forEach(e => {
                         const li = document.createElement("li");
-                        li.innerText = `${e.author} pushed to ${e.to_branch} on ${e.timestamp}  (rendered at ${new Date().toLocaleTimeString()})`;
+                       if (e.action === "MERGE") {
+                            li.innerText = `${e.author} merged branch ${e.from_branch} to ${e.to_branch} on ${e.timestamp}`;
+                        } else {
+                            li.innerText = `${e.author} pushed to ${e.to_branch} on ${e.timestamp}`;
+                        }
                         list.appendChild(li);
                     });
                 });
