@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>GitHub Events</title>
+</head>
+
+<body>
+    <h2>Latest GitHub Events</h2>
+    <ul id="events"></ul>
+
+    <script>
+        function loadEvents() {
+            fetch("/events")
+                .then(res => res.json())
+                .then(data => {
+                    const list = document.getElementById("events");
+                    list.innerHTML = "";
+
+                    data.events.forEach(e => {
+                        const li = document.createElement("li");
+                        li.innerText = `${e.author} pushed to ${e.to_branch} on ${e.timestamp}`;
+                        list.appendChild(li);
+                    });
+                });
+        }
+
+        loadEvents();
+        setInterval(loadEvents, 15000);
+    </script>
+</body>
+
+</html>
