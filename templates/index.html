@@ -4,6 +4,18 @@
 <head>
     <title>GitHub Events</title>
 </head>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+  }
+  ul {
+    padding-left: 20px;
+  }
+  li {
+    margin-bottom: 12px;  
+    line-height: 1.6;      
+  }
+</style>
 
 <body>
     <h2>Latest GitHub Events</h2>
@@ -19,7 +31,7 @@
 
                     data.events.forEach(e => {
                         const li = document.createElement("li");
-                        li.innerText = `${e.author} pushed to ${e.to_branch} on ${e.timestamp} (rendered at ${new Date().toLocaleTimeString()})`;
+                        li.innerText = `${e.author} pushed to ${e.to_branch} on ${e.timestamp}  (rendered at ${new Date().toLocaleTimeString()})`;
                         list.appendChild(li);
                     });
                 });
