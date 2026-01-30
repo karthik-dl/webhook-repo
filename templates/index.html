@@ -4,12 +4,13 @@
 <head>
     <title>GitHub Events</title>
 </head>
+
 <style>
   body {
     font-family: Arial, sans-serif;
   }
   ul {
-    padding-left: 20px;
+    padding-left:20px;
   }
   li {
     margin-bottom: 12px;  
@@ -20,28 +21,47 @@
 <body>
     <h2>Latest GitHub Events</h2>
     <ul id="events"></ul>
-
     <script>
+        /**
+         * Fetches latest GitHub events from backend
+         * This function is called every 15 seconds
+         */
         function loadEvents() {
+
+            // Call backend API to get latest events
             fetch("/events")
                 .then(res => res.json())
                 .then(data => {
+
+                    // Get the event list element
                     const list = document.getElementById("events");
+
+                    // Clear existing events before re-rendering
                     list.innerHTML = "";
 
+                    // Loop through each event received from API
                     data.events.forEach(e => {
+
+                        // Create a new list item for each event
                         const li = document.createElement("li");
-                       if (e.action === "MERGE") {
+
+                        // Display different message based on event type
+                        if (e.action === "MERGE") {
                             li.innerText = `${e.author} merged branch ${e.from_branch} to ${e.to_branch} on ${e.timestamp}`;
                         } else {
                             li.innerText = `${e.author} pushed to ${e.to_branch} on ${e.timestamp}`;
                         }
+
+                        // Append event to the list
                         list.appendChild(li);
                     });
                 });
         }
 
+        // Initial load when page is opened
         loadEvents();
+
+        // Poll backend every 15 seconds to refresh events
         setInterval(loadEvents, 15000);
     </script>
 </body>
