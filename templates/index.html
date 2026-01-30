@@ -47,9 +47,11 @@
 
                         // Display different message based on event type
                         if (e.action === "MERGE") {
-                            li.innerText = `${e.author} merged branch ${e.from_branch} to ${e.to_branch} on ${e.timestamp}`;
+                            li.innerText = `${e.author} merged branch ${e.from_branch} to ${e.to_branch} on ${e.timestamp}
+                            (last refreshed at ${new Date().toLocaleTimeString()})`;
                         } else {
-                            li.innerText = `${e.author} pushed to ${e.to_branch} on ${e.timestamp}`;
+                            li.innerText = `${e.author} pushed to ${e.to_branch} on ${e.timestamp}
+                            (last refreshed at ${new Date().toLocaleTimeString()})`;
                         }
 
                         // Append event to the list
